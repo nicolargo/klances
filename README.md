@@ -1,2 +1,3 @@
-# klances
-Glances for Kubernetes 
+# Klances is "Glances for Kubernetes"
+
+
