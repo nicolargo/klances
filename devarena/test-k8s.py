@@ -16,7 +16,10 @@ v1 = k8s.client.CoreV1Api()
 # List all nodes
 ret = v1.list_node()
 for i in ret.items:
-    print("%s\t%s" % (i.status.addresses[0].address, i.metadata.name))
+    print("\t".join([i.status.addresses[0].address,
+                     i.metadata.name,
+                     i.status.capacity['cpu'],
+                     i.status.capacity['memory']]))
 
 # List all namespaces
 ret = v1.list_namespace()
