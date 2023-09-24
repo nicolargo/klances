@@ -1,0 +1,25 @@
+Screen {
+    layout: grid;
+    grid-size: 3;
+}
+
+#nodes {
+    column-span: 3;
+}
+
+#namespaces {
+    column-span: 1;
+}
+
+#pods {
+    column-span: 2;
+}
+
+#logs {
+    column-span: 3;
+}
+
+.box {
+    height: 100%;
+    border: solid green;
+}
