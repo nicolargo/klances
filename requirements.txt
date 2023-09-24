@@ -1,3 +1,4 @@
 # https://github.com/kubernetes-client/python#compatibility-matrix-of-supported-client-versions
 kubernetes
 rich
+textual
