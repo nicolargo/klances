@@ -1,25 +1,37 @@
 Screen {
     layout: grid;
-    grid-size: 3;
+}
+
+#main {
+    layout: vertical;
+    height: 100%;
+}
+
+#middle {
+    layout: horizontal;
+    height: 30%;
+}
+
+.box {
+    border: solid green;
 }
 
 #nodes {
     column-span: 3;
+    max-height: 20%;
 }
 
 #namespaces {
     column-span: 1;
+    height: 100%;
+    width: 20%;
 }
 
 #pods {
     column-span: 2;
+    height: 100%;
 }
 
 #logs {
     column-span: 3;
-}
-
-.box {
-    height: 100%;
-    border: solid green;
 }
