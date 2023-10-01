@@ -8,8 +8,16 @@ from textual.events import Mount
 from textual.widgets import Header, Footer, Log, DataTable, SelectionList
 from textual.widgets.selection_list import Selection
 
-
 import kubernetes as k8s
+
+import logging
+
+# Create a logger instance for this module and make it log in /tmp/test.log file
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler('/tmp/test.log')
+handler.setLevel(logging.DEBUG)
+logger.addHandler(handler)
 
 
 class KlanceLayout(App):
@@ -92,11 +100,19 @@ class KlanceLayout(App):
     def update_pods(self):
         selected_namespaces = self.query_one('#namespaces', SelectionList).selected
         pods_plugin = self.query_one('#pods', DataTable)
-        pods_plugin.border_title = "Pods in namespace {}".format(selected_namespaces)
+
         pods = self.k8s_pods(namespaces=selected_namespaces)
-        pods.clear()
-        pods_plugin.add_columns(*pods[0])
-        pods_plugin.add_rows(pods[1:])
+
+        pods_plugin.border_title = "{} pods in namespaces {}".format(
+            len(pods) - 1 if len(pods) > 1 else 'No',
+            ', '.join(selected_namespaces) if selected_namespaces != [] else '')
+        pods_plugin.clear()
+        if pods != []:
+            # Update column the first time
+            # pods_plugin.columns.clear() may be better ?
+            if len(pods_plugin.columns) == 0:
+                pods_plugin.add_columns(*pods[0])
+            pods_plugin.add_rows(pods[1:])
 
     # LOGS
 
@@ -117,7 +133,7 @@ class KlanceLayout(App):
         self.update_nodes()
         self.update_namespaces()
         # Sure ? better to call it from callback namespace ?
-        self.update_pods()
+        # self.update_pods()
 
     def on_ready(self) -> None:
         self.update_logs()
