@@ -9,12 +9,29 @@ It's also provided a fully functional REST API for integration with other tools 
 ## Technology Stack
 
 Backend: Python, FastAPI, Kubernetes Python Client
-Frontend: Vue.js
+Frontend: Vue.js, eCharts, Tailwind CSS
 
 ## Features
 
 Top menu with cluster name, cluster status, and refresh button
-Node list with CPU, Memory
-Namespace list with CPU, Memory and Pod count
-Pod list with CPU, Memory and status
-Pod details with services/ingress, events and logs
+
+Horizontal (full size) panel with 2 columns:
+
+- Node list with roles, version, CPU, Memory
+- Namespace list with status, CPU, Memory and Pod count
+
+If a namespace is selected, it will show in another horizontal (full size) panel:
+
+- Pod list with status, CPU, Memory (both with current, requested and limit), ip, node
+
+if a pod is selected, it will show in another horizontal (full size) panel:
+
+- Pod details with services/ingress, events and logs
+
+Bottom menu with links to GitHub repository and license information.
+
+Panels are refreshable with the refresh button in the top menu, and also auto-refresh every 5 seconds (delay configurable through the WebUI).
+
+## License
+
+Klances is licensed under the MIT License. See the LICENSE file for more details.
