@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 class K8sUnavailableError(Exception):
     """Raised when the Kubernetes client has no valid configuration."""
+
     pass
 
 
@@ -105,17 +106,23 @@ class K8sClient:
                 for item in result.get("items", [])
             }
         except ApiException:
-            logger.warning("Node metrics API unavailable (metrics-server not installed?)")
+            logger.warning(
+                "Node metrics API unavailable (metrics-server not installed?)"
+            )
             return {}
 
-    def get_pod_metrics(self, namespace: str | None = None) -> dict[tuple[str, str], dict]:
+    def get_pod_metrics(
+        self, namespace: str | None = None
+    ) -> dict[tuple[str, str], dict]:
         """Return pod metrics keyed by (namespace, pod_name). Empty dict if metrics-server is unavailable."""
         self._require_config()
         try:
             if namespace:
                 result = self.custom.list_namespaced_custom_object(
-                    group="metrics.k8s.io", version="v1beta1",
-                    namespace=namespace, plural="pods",
+                    group="metrics.k8s.io",
+                    version="v1beta1",
+                    namespace=namespace,
+                    plural="pods",
                 )
             else:
                 result = self.custom.list_cluster_custom_object(
@@ -138,7 +145,9 @@ class K8sClient:
                 metrics[(ns, name)] = {"cpu": cpu, "memory": memory}
             return metrics
         except ApiException:
-            logger.warning("Pod metrics API unavailable (metrics-server not installed?)")
+            logger.warning(
+                "Pod metrics API unavailable (metrics-server not installed?)"
+            )
             return {}
 
     def get_services_for_pod(self, namespace: str, pod_labels: dict) -> list:
@@ -146,19 +155,23 @@ class K8sClient:
         self._require_config()
         services = self.core.list_namespaced_service(namespace=namespace).items
         return [
-            svc for svc in services
-            if svc.spec.selector and all(
-                pod_labels.get(k) == v for k, v in svc.spec.selector.items()
-            )
+            svc
+            for svc in services
+            if svc.spec.selector
+            and all(pod_labels.get(k) == v for k, v in svc.spec.selector.items())
         ]
 
-    def get_ingresses_for_services(self, namespace: str, service_names: set[str]) -> list:
+    def get_ingresses_for_services(
+        self, namespace: str, service_names: set[str]
+    ) -> list:
         """Return ingresses that route to any of the given services."""
         if not service_names:
             return []
         self._require_config()
         try:
-            ingresses = self.networking.list_namespaced_ingress(namespace=namespace).items
+            ingresses = self.networking.list_namespaced_ingress(
+                namespace=namespace
+            ).items
             result = []
             for ing in ingresses:
                 for rule in ing.spec.rules or []:
@@ -182,9 +195,12 @@ class K8sClient:
     def get_pod_logs(self, namespace: str, pod_name: str, tail_lines: int = 100) -> str:
         self._require_config()
         try:
-            return self.core.read_namespaced_pod_log(
-                name=pod_name, namespace=namespace, tail_lines=tail_lines
-            ) or ""
+            return (
+                self.core.read_namespaced_pod_log(
+                    name=pod_name, namespace=namespace, tail_lines=tail_lines
+                )
+                or ""
+            )
         except ApiException:
             return ""
 

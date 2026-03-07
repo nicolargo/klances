@@ -5,6 +5,7 @@ Klances development launcher.
 Starts both the Vite frontend watcher and the FastAPI server in parallel.
 Access the application at http://localhost:8000/frontend/
 """
+
 import os
 import signal
 import subprocess
@@ -36,7 +37,9 @@ def main() -> None:
     print("[klances] Building frontend...")
     result = subprocess.run(["npm", "run", "build"], cwd=FRONTEND_DIR)
     if result.returncode != 0:
-        print("[klances] Frontend build failed — check npm output above.", file=sys.stderr)
+        print(
+            "[klances] Frontend build failed — check npm output above.", file=sys.stderr
+        )
         sys.exit(1)
 
     # Vite watch mode: rebuilds src/frontend/dist/ on every file change
@@ -48,7 +51,16 @@ def main() -> None:
 
     # FastAPI + uvicorn with auto-reload on Python file changes
     uvicorn = subprocess.Popen(
-        [UVICORN, "api.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000", "--no-access-log"],
+        [
+            UVICORN,
+            "api.main:app",
+            "--reload",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8000",
+            "--no-access-log",
+        ],
         cwd=_ROOT,
     )
     procs.append(uvicorn)
@@ -68,7 +80,9 @@ def main() -> None:
     while True:
         for p in procs:
             if p.poll() is not None:
-                print(f"[klances] A subprocess exited unexpectedly (pid={p.pid}). Stopping.")
+                print(
+                    f"[klances] A subprocess exited unexpectedly (pid={p.pid}). Stopping."
+                )
                 _cleanup()
         time.sleep(0.5)
 

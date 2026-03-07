@@ -19,11 +19,17 @@ app = FastAPI(
     openapi_url=f"{API_PREFIX}/openapi.json",
 )
 
+
 @app.exception_handler(K8sUnavailableError)
-async def k8s_config_error_handler(request: Request, exc: K8sUnavailableError) -> JSONResponse:
+async def k8s_config_error_handler(
+    request: Request, exc: K8sUnavailableError
+) -> JSONResponse:
     return JSONResponse(
         status_code=503,
-        content={"detail": f"Kubernetes configuration error: {exc}", "cluster_reachable": False},
+        content={
+            "detail": f"Kubernetes configuration error: {exc}",
+            "cluster_reachable": False,
+        },
     )
 
 
@@ -31,7 +37,10 @@ async def k8s_config_error_handler(request: Request, exc: K8sUnavailableError) -
 async def k8s_unreachable_handler(request: Request, exc: MaxRetryError) -> JSONResponse:
     return JSONResponse(
         status_code=503,
-        content={"detail": "Kubernetes cluster unreachable", "cluster_reachable": False},
+        content={
+            "detail": "Kubernetes cluster unreachable",
+            "cluster_reachable": False,
+        },
     )
 
 
@@ -50,4 +59,8 @@ def root_redirect() -> RedirectResponse:
 # Serve the built Vue.js frontend (src/frontend/dist/) under /frontend/
 _frontend_dist = Path(__file__).parent.parent / "frontend" / "dist"
 if _frontend_dist.exists():
-    app.mount("/frontend", StaticFiles(directory=str(_frontend_dist), html=True), name="frontend")
+    app.mount(
+        "/frontend",
+        StaticFiles(directory=str(_frontend_dist), html=True),
+        name="frontend",
+    )

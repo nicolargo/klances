@@ -35,20 +35,22 @@ def get_namespaces(k8s: K8sClient = Depends(get_k8s_client)):
                 mem_used += m.get("memory") or 0
                 has_metrics = True
 
-        result.append(NamespaceInfo(
-            name=ns_name,
-            status=ns.status.phase or "Unknown",
-            pod_count=len(ns_pods),
-            cpu=ResourceUsage(
-                requested=cpu_req,
-                limit=cpu_lim,
-                used=cpu_used if has_metrics else None,
-            ),
-            memory=ResourceUsage(
-                requested=mem_req,
-                limit=mem_lim,
-                used=mem_used if has_metrics else None,
-            ),
-        ))
+        result.append(
+            NamespaceInfo(
+                name=ns_name,
+                status=ns.status.phase or "Unknown",
+                pod_count=len(ns_pods),
+                cpu=ResourceUsage(
+                    requested=cpu_req,
+                    limit=cpu_lim,
+                    used=cpu_used if has_metrics else None,
+                ),
+                memory=ResourceUsage(
+                    requested=mem_req,
+                    limit=mem_lim,
+                    used=mem_used if has_metrics else None,
+                ),
+            )
+        )
 
     return result

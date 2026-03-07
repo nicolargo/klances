@@ -10,7 +10,8 @@ router = APIRouter()
 def get_cluster(k8s: K8sClient = Depends(get_k8s_client)):
     nodes = k8s.get_nodes()
     healthy = sum(
-        1 for node in nodes
+        1
+        for node in nodes
         for cond in (node.status.conditions or [])
         if cond.type == "Ready" and cond.status == "True"
     )

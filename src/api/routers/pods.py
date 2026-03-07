@@ -2,7 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from kubernetes.client.exceptions import ApiException
 
 from ..k8s_client import K8sClient, get_k8s_client
-from ..models import EventInfo, IngressInfo, PodDetail, PodInfo, ResourceUsage, ServiceInfo
+from ..models import (
+    EventInfo,
+    IngressInfo,
+    PodDetail,
+    PodInfo,
+    ResourceUsage,
+    ServiceInfo,
+)
 from ..utils import aggregate_pod_resources, get_pod_status
 
 router = APIRouter()
@@ -43,7 +50,7 @@ def _build_ingress_info(ing) -> IngressInfo:
     paths = []
     for rule in ing.spec.rules or []:
         host = rule.host or "*"
-        for path in (rule.http.paths if rule.http else []):
+        for path in rule.http.paths if rule.http else []:
             paths.append(f"{host}{path.path or '/'}")
     return IngressInfo(
         name=ing.metadata.name,
@@ -72,13 +79,17 @@ def get_pods(namespace: str, k8s: K8sClient = Depends(get_k8s_client)):
     pod_metrics = k8s.get_pod_metrics(namespace)
 
     return [
-        PodInfo(**_build_pod_base(pod, pod_metrics.get((namespace, pod.metadata.name), {})))
+        PodInfo(
+            **_build_pod_base(pod, pod_metrics.get((namespace, pod.metadata.name), {}))
+        )
         for pod in pods
     ]
 
 
 @router.get("/namespaces/{namespace}/pods/{pod_name}", response_model=PodDetail)
-def get_pod_detail(namespace: str, pod_name: str, k8s: K8sClient = Depends(get_k8s_client)):
+def get_pod_detail(
+    namespace: str, pod_name: str, k8s: K8sClient = Depends(get_k8s_client)
+):
     try:
         pod = k8s.get_pod(namespace, pod_name)
     except ApiException as e:

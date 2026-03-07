@@ -1,9 +1,10 @@
-import pytest
-from fastapi.testclient import TestClient
 from unittest.mock import MagicMock
 
-from api.main import app
+import pytest
+from fastapi.testclient import TestClient
+
 from api.k8s_client import get_k8s_client
+from api.main import app
 
 
 @pytest.fixture

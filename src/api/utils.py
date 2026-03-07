@@ -17,10 +17,18 @@ def parse_memory(mem_str: str | None) -> int | None:
     if not mem_str:
         return None
     suffixes = {
-        "Ki": 1024, "Mi": 1024**2, "Gi": 1024**3, "Ti": 1024**4,
-        "Pi": 1024**5, "Ei": 1024**6,
-        "k": 1000, "M": 1000**2, "G": 1000**3, "T": 1000**4,
-        "P": 1000**5, "E": 1000**6,
+        "Ki": 1024,
+        "Mi": 1024**2,
+        "Gi": 1024**3,
+        "Ti": 1024**4,
+        "Pi": 1024**5,
+        "Ei": 1024**6,
+        "k": 1000,
+        "M": 1000**2,
+        "G": 1000**3,
+        "T": 1000**4,
+        "P": 1000**5,
+        "E": 1000**6,
     }
     for suffix, multiplier in suffixes.items():
         if mem_str.endswith(suffix):
@@ -63,7 +71,9 @@ def get_pod_status(pod) -> str:
     return phase
 
 
-def aggregate_pod_resources(pod) -> tuple[int | None, int | None, int | None, int | None]:
+def aggregate_pod_resources(
+    pod,
+) -> tuple[int | None, int | None, int | None, int | None]:
     """Return (cpu_requested, cpu_limit, mem_requested, mem_limit) summed across all containers."""
     cpu_req = cpu_lim = mem_req = mem_lim = 0
     has_req = has_lim = False

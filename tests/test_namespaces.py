@@ -8,7 +8,9 @@ def _make_namespace(name: str, phase: str = "Active") -> MagicMock:
     return ns
 
 
-def _make_pod(name: str, namespace: str, cpu_req: str = "100m", mem_req: str = "128Mi") -> MagicMock:
+def _make_pod(
+    name: str, namespace: str, cpu_req: str = "100m", mem_req: str = "128Mi"
+) -> MagicMock:
     pod = MagicMock()
     pod.metadata.name = name
     pod.metadata.namespace = namespace
@@ -33,7 +35,7 @@ def test_namespaces_aggregates_pod_resources(client, mock_k8s):
     assert ns["pod_count"] == 1
     assert ns["cpu"]["requested"] == 100
     assert ns["cpu"]["limit"] == 200
-    assert ns["cpu"]["used"] is None          # no metrics-server
+    assert ns["cpu"]["used"] is None  # no metrics-server
     assert ns["memory"]["requested"] == 128 * 1024**2
     assert ns["memory"]["used"] is None
 

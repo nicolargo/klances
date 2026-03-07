@@ -2,17 +2,17 @@ from pydantic import BaseModel
 
 
 class ResourceUsage(BaseModel):
-    capacity: int | None = None      # nodes: raw capacity
-    allocatable: int | None = None   # nodes: schedulable capacity
-    requested: int | None = None     # pods/namespaces: sum of requests
-    limit: int | None = None         # pods/namespaces: sum of limits
-    used: int | None = None          # all: live usage from metrics-server (None if unavailable)
+    capacity: int | None = None  # nodes: raw capacity
+    allocatable: int | None = None  # nodes: schedulable capacity
+    requested: int | None = None  # pods/namespaces: sum of requests
+    limit: int | None = None  # pods/namespaces: sum of limits
+    used: int | None = None  # all: live usage from metrics-server (None if unavailable)
 
 
 class ClusterInfo(BaseModel):
     name: str
     version: str
-    status: str   # "healthy" | "degraded" | "unknown"
+    status: str  # "healthy" | "degraded" | "unknown"
     node_count: int
 
 
@@ -20,7 +20,7 @@ class NodeInfo(BaseModel):
     name: str
     roles: list[str]
     version: str
-    status: str   # "Ready" | "NotReady" | "Unknown"
+    status: str  # "Ready" | "NotReady" | "Unknown"
     cpu: ResourceUsage
     memory: ResourceUsage
 
