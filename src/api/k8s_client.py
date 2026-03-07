@@ -44,7 +44,7 @@ class K8sClient:
         return self._config_error is None
 
     def check_connection(self) -> tuple[bool, str | None]:
-        """Return (True, None) if the cluster API server is reachable, (False, reason) otherwise."""
+        """Check if the cluster API server is reachable."""
         if self._config_error:
             return False, self._config_error
         try:
@@ -92,7 +92,7 @@ class K8sClient:
         return self.core.read_namespaced_pod(name=pod_name, namespace=namespace)
 
     def get_node_metrics(self) -> dict[str, dict]:
-        """Return node metrics keyed by node name. Empty dict if metrics-server is unavailable."""
+        """Return node metrics keyed by node name."""
         self._require_config()
         try:
             result = self.custom.list_cluster_custom_object(
@@ -114,7 +114,7 @@ class K8sClient:
     def get_pod_metrics(
         self, namespace: str | None = None
     ) -> dict[tuple[str, str], dict]:
-        """Return pod metrics keyed by (namespace, pod_name). Empty dict if metrics-server is unavailable."""
+        """Return pod metrics keyed by (namespace, pod_name)."""
         self._require_config()
         try:
             if namespace:
@@ -209,7 +209,7 @@ _k8s_client: K8sClient | None = None
 
 
 def get_k8s_client() -> K8sClient:
-    """Return a cached K8sClient. Retries initialisation if the previous attempt had a config error."""
+    """Return a cached K8sClient, retrying on config error."""
     global _k8s_client
     if _k8s_client is None or not _k8s_client.available:
         _k8s_client = K8sClient()

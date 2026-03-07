@@ -81,7 +81,7 @@ def main() -> None:
         for p in procs:
             if p.poll() is not None:
                 print(
-                    f"[klances] A subprocess exited unexpectedly (pid={p.pid}). Stopping."
+                    f"[klances] Subprocess exited (pid={p.pid}). Stopping."
                 )
                 _cleanup()
         time.sleep(0.5)

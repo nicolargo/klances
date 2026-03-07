@@ -74,7 +74,7 @@ def get_pod_status(pod) -> str:
 def aggregate_pod_resources(
     pod,
 ) -> tuple[int | None, int | None, int | None, int | None]:
-    """Return (cpu_requested, cpu_limit, mem_requested, mem_limit) summed across all containers."""
+    """Return (cpu_req, cpu_lim, mem_req, mem_lim) summed."""
     cpu_req = cpu_lim = mem_req = mem_lim = 0
     has_req = has_lim = False
     for container in pod.spec.containers or []:
