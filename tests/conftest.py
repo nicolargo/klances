@@ -8,7 +8,9 @@ from api.k8s_client import get_k8s_client
 
 @pytest.fixture
 def mock_k8s():
-    return MagicMock()
+    mock = MagicMock()
+    mock.check_connection.return_value = (True, None)
+    return mock
 
 
 @pytest.fixture

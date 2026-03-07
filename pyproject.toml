@@ -21,6 +21,13 @@ dev = [
     "ruff>=0.3.0",
 ]
 
+[project.scripts]
+klances = "server:main"
+klances-dev = "dev:main"
+
+[tool.setuptools]
+py-modules = ["server", "dev"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
