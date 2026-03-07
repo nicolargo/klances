@@ -15,7 +15,7 @@ What's displayed by Klances:
 - Pod details — services/ingress, events, logs
 
 <p align="center">
-  <img src="./docs/dashboard.png" alt="Klances Dashboard" width="900">
+  <img src="./docs/screenshot.png" alt="Klances Dashboard" width="900">
 </p>
 
 ## Requirements
