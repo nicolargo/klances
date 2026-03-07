@@ -69,6 +69,16 @@ make format    # ruff formatter
 - OpenAPI docs available at `http://localhost:8000/docs` when running
 - Frontend (Vue.js + Vite): `npm install && npm run dev` in `src/frontend/` — served by FastAPI from `src/frontend/dist/` in production
 
+## Constraints and quality standards
+
+- Read-only access to Kubernetes cluster (no mutations)
+- Clean, modular code with clear separation of concerns (API vs frontend)
+- Comprehensive test coverage for backend logic (Pytest)
+- Responsive, user-friendly UI with Tailwind CSS
+- API documentation via FastAPI's OpenAPI integration
+- CI/CD pipelines for testing and deployment (GitHub Actions)
+- Code should be linted (make lint) and formatted (make format) before commits (no errors or warnings)
+
 ## Architectural Considerations
 
 - Read-only design simplifies security and permissions
