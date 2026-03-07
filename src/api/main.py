@@ -1,9 +1,11 @@
 from pathlib import Path
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from urllib3.exceptions import MaxRetryError
 
+from .k8s_client import K8sUnavailableError
 from .routers import cluster, namespaces, nodes, pods, status
 
 API_PREFIX = "/api/1"
@@ -17,13 +19,21 @@ app = FastAPI(
     openapi_url=f"{API_PREFIX}/openapi.json",
 )
 
-# Allow the Vite dev server to call the API during frontend development
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_methods=["GET"],
-    allow_headers=["*"],
-)
+@app.exception_handler(K8sUnavailableError)
+async def k8s_config_error_handler(request: Request, exc: K8sUnavailableError) -> JSONResponse:
+    return JSONResponse(
+        status_code=503,
+        content={"detail": f"Kubernetes configuration error: {exc}", "cluster_reachable": False},
+    )
+
+
+@app.exception_handler(MaxRetryError)
+async def k8s_unreachable_handler(request: Request, exc: MaxRetryError) -> JSONResponse:
+    return JSONResponse(
+        status_code=503,
+        content={"detail": "Kubernetes cluster unreachable", "cluster_reachable": False},
+    )
+
 
 app.include_router(status.router, prefix=API_PREFIX, tags=["status"])
 app.include_router(cluster.router, prefix=API_PREFIX, tags=["cluster"])
@@ -31,7 +41,13 @@ app.include_router(nodes.router, prefix=API_PREFIX, tags=["nodes"])
 app.include_router(namespaces.router, prefix=API_PREFIX, tags=["namespaces"])
 app.include_router(pods.router, prefix=API_PREFIX, tags=["pods"])
 
-# Serve the built Vue.js frontend when it exists
+
+@app.get("/", include_in_schema=False)
+def root_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/frontend/")
+
+
+# Serve the built Vue.js frontend (src/frontend/dist/) under /frontend/
 _frontend_dist = Path(__file__).parent.parent / "frontend" / "dist"
 if _frontend_dist.exists():
-    app.mount("/", StaticFiles(directory=str(_frontend_dist), html=True), name="frontend")
+    app.mount("/frontend", StaticFiles(directory=str(_frontend_dist), html=True), name="frontend")

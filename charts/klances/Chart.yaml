@@ -1,0 +1,19 @@
+apiVersion: v2
+name: klances
+description: A read-only Kubernetes dashboard — the Glances of Kubernetes
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - kubernetes
+  - dashboard
+  - monitoring
+  - read-only
+home: https://github.com/nicolargo/klances
+sources:
+  - https://github.com/nicolargo/klances
+maintainers:
+  - name: Nicolas Hennion
+    email: nicolas@nicolargo.com
+annotations:
+  artifacthub.io/license: MIT

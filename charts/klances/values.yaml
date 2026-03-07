@@ -1,0 +1,67 @@
+# Number of pod replicas
+replicaCount: 1
+
+image:
+  # Container image repository
+  repository: klances
+  # Image pull policy
+  pullPolicy: IfNotPresent
+  # Image tag (defaults to chart appVersion if empty)
+  tag: ""
+
+# Docker registry secret names
+imagePullSecrets: []
+# Override the chart name
+nameOverride: ""
+# Override the full release name
+fullnameOverride: ""
+
+serviceAccount:
+  # Create a dedicated ServiceAccount
+  create: true
+  # Annotations for the ServiceAccount
+  annotations: {}
+  # Override the ServiceAccount name (defaults to fullname)
+  name: ""
+
+rbac:
+  # Create ClusterRole and ClusterRoleBinding with read-only permissions
+  create: true
+
+service:
+  # Kubernetes Service type (ClusterIP, NodePort, LoadBalancer)
+  type: ClusterIP
+  # Service port
+  port: 8080
+
+ingress:
+  # Enable Ingress resource
+  enabled: false
+  # Ingress class name
+  className: ""
+  # Ingress annotations
+  annotations: {}
+  # Ingress host rules
+  hosts:
+    - host: klances.local
+      paths:
+        - path: /
+          pathType: Prefix
+  # Ingress TLS configuration
+  tls: []
+
+# CPU/memory requests and limits
+resources: {}
+  # limits:
+  #   cpu: 200m
+  #   memory: 256Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# Node labels for pod assignment
+nodeSelector: {}
+# Tolerations for pod scheduling
+tolerations: []
+# Affinity rules for pod scheduling
+affinity: {}
