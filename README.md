@@ -14,7 +14,9 @@ What's displayed by Klances:
 - Pod list for each namespace (status, CPU, Memory with current/requested/limit)
 - Pod details — services/ingress, events, logs
 
-![Dashboard](./docs/dashboard.png)
+<p align="center">
+  <img src="./docs/dashboard.png" alt="Klances Dashboard" width="900">
+</p>
 
 ## Requirements
 
