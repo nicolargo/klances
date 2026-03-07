@@ -3,7 +3,7 @@ replicaCount: 1
 
 image:
   # Container image repository
-  repository: klances
+  repository: ghcr.io/nicolargo/klances
   # Image pull policy
   pullPolicy: IfNotPresent
   # Image tag (defaults to chart appVersion if empty)
