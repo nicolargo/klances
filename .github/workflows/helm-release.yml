@@ -32,15 +32,9 @@ jobs:
       - name: Lint chart
         run: helm lint ./charts/klances
 
-      - name: Package chart
-        run: |
-          mkdir -p .cr-release-packages
-          helm package ./charts/klances --destination .cr-release-packages/
-
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: charts
-          skip_packaging: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
