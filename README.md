@@ -35,6 +35,18 @@ To install in a specific namespace:
 helm install klances klances/klances --namespace monitoring --create-namespace
 ```
 
+#### Port forwarding
+
+```bash
+kubectl port-forward service/klances 8080:8080 -n monitoring
+
+or with minikube:
+
+minikube kubectl -- port-forward service/klances 8080:8080 -n monitoring
+```
+
+Then open **http://localhost:8080/frontend/** in your browser.
+
 #### Exposing Klances outside the cluster
 
 Create a `my-values.yaml` file to enable Ingress:
