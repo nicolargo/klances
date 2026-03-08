@@ -1,0 +1,720 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Klances API",
+    "description": "Kubernetes cluster monitoring REST API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/1/status": {
+      "get": {
+        "tags": [
+          "status"
+        ],
+        "summary": "Get Status",
+        "operationId": "get_status_api_1_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1/cluster": {
+      "get": {
+        "tags": [
+          "cluster"
+        ],
+        "summary": "Get Cluster",
+        "operationId": "get_cluster_api_1_cluster_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClusterInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1/nodes": {
+      "get": {
+        "tags": [
+          "nodes"
+        ],
+        "summary": "Get Nodes",
+        "operationId": "get_nodes_api_1_nodes_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/NodeInfo"
+                  },
+                  "type": "array",
+                  "title": "Response Get Nodes Api 1 Nodes Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1/namespaces": {
+      "get": {
+        "tags": [
+          "namespaces"
+        ],
+        "summary": "Get Namespaces",
+        "operationId": "get_namespaces_api_1_namespaces_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/NamespaceInfo"
+                  },
+                  "type": "array",
+                  "title": "Response Get Namespaces Api 1 Namespaces Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1/namespaces/{namespace}/pods": {
+      "get": {
+        "tags": [
+          "pods"
+        ],
+        "summary": "Get Pods",
+        "operationId": "get_pods_api_1_namespaces__namespace__pods_get",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Namespace"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PodInfo"
+                  },
+                  "title": "Response Get Pods Api 1 Namespaces  Namespace  Pods Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/1/namespaces/{namespace}/pods/{pod_name}": {
+      "get": {
+        "tags": [
+          "pods"
+        ],
+        "summary": "Get Pod Detail",
+        "operationId": "get_pod_detail_api_1_namespaces__namespace__pods__pod_name__get",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Namespace"
+            }
+          },
+          {
+            "name": "pod_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Pod Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PodDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ClusterInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "node_count": {
+            "type": "integer",
+            "title": "Node Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "version",
+          "status",
+          "node_count"
+        ],
+        "title": "ClusterInfo"
+      },
+      "EventInfo": {
+        "properties": {
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Type"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "timestamp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "reason",
+          "message",
+          "timestamp"
+        ],
+        "title": "EventInfo"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "IngressInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "host": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Host"
+          },
+          "paths": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Paths"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "host",
+          "paths"
+        ],
+        "title": "IngressInfo"
+      },
+      "NamespaceInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "pod_count": {
+            "type": "integer",
+            "title": "Pod Count"
+          },
+          "cpu": {
+            "$ref": "#/components/schemas/ResourceUsage"
+          },
+          "memory": {
+            "$ref": "#/components/schemas/ResourceUsage"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "status",
+          "pod_count",
+          "cpu",
+          "memory"
+        ],
+        "title": "NamespaceInfo"
+      },
+      "NodeInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Roles"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "cpu": {
+            "$ref": "#/components/schemas/ResourceUsage"
+          },
+          "memory": {
+            "$ref": "#/components/schemas/ResourceUsage"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "roles",
+          "version",
+          "status",
+          "cpu",
+          "memory"
+        ],
+        "title": "NodeInfo"
+      },
+      "PodDetail": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "namespace": {
+            "type": "string",
+            "title": "Namespace"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "ip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ip"
+          },
+          "node": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Node"
+          },
+          "cpu": {
+            "$ref": "#/components/schemas/ResourceUsage"
+          },
+          "memory": {
+            "$ref": "#/components/schemas/ResourceUsage"
+          },
+          "services": {
+            "items": {
+              "$ref": "#/components/schemas/ServiceInfo"
+            },
+            "type": "array",
+            "title": "Services"
+          },
+          "ingresses": {
+            "items": {
+              "$ref": "#/components/schemas/IngressInfo"
+            },
+            "type": "array",
+            "title": "Ingresses"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/EventInfo"
+            },
+            "type": "array",
+            "title": "Events"
+          },
+          "logs": {
+            "type": "string",
+            "title": "Logs"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "namespace",
+          "status",
+          "ip",
+          "node",
+          "cpu",
+          "memory",
+          "services",
+          "ingresses",
+          "events",
+          "logs"
+        ],
+        "title": "PodDetail"
+      },
+      "PodInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "namespace": {
+            "type": "string",
+            "title": "Namespace"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "ip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ip"
+          },
+          "node": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Node"
+          },
+          "cpu": {
+            "$ref": "#/components/schemas/ResourceUsage"
+          },
+          "memory": {
+            "$ref": "#/components/schemas/ResourceUsage"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "namespace",
+          "status",
+          "ip",
+          "node",
+          "cpu",
+          "memory"
+        ],
+        "title": "PodInfo"
+      },
+      "ResourceUsage": {
+        "properties": {
+          "capacity": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capacity"
+          },
+          "allocatable": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Allocatable"
+          },
+          "requested": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requested"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit"
+          },
+          "used": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Used"
+          }
+        },
+        "type": "object",
+        "title": "ResourceUsage"
+      },
+      "ServiceInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "cluster_ip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cluster Ip"
+          },
+          "ports": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Ports"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "cluster_ip",
+          "ports"
+        ],
+        "title": "ServiceInfo"
+      },
+      "StatusResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "klances_version": {
+            "type": "string",
+            "title": "Klances Version"
+          },
+          "api_version": {
+            "type": "string",
+            "title": "Api Version"
+          },
+          "cluster_reachable": {
+            "type": "boolean",
+            "title": "Cluster Reachable"
+          },
+          "cluster_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cluster Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "klances_version",
+          "api_version",
+          "cluster_reachable"
+        ],
+        "title": "StatusResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

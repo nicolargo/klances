@@ -18,13 +18,13 @@ What's displayed by Klances:
   <img src="./docs/screenshot.png" alt="Klances Dashboard" width="900">
 </p>
 
-## Requirements
+## Development setup
+
+Requirements:
 
 - Python ≥ 3.10
 - Node.js ≥ 18
 - A Kubernetes cluster reachable via `~/.kube/config` (local dev) or in-cluster service account (production)
-
-## Development setup
 
 ```bash
 # 1. Install all dependencies (backend + frontend) — first time only
@@ -97,16 +97,7 @@ helm repo update
 helm install klances klances/klances
 ```
 
-Pour plus d'options, consulte la [documentation du chart](./charts/klances/README.md).
-
-A GitHub Actions pipeline (`.github/workflows/helm-release.yml`) automatically packages and publishes the chart on every push to `main` that modifies `charts/**`. Before the first run, the `gh-pages` branch must exist:
-
-```bash
-git checkout --orphan gh-pages
-git rm -rf .
-git commit --allow-empty -m "Init gh-pages"
-git push origin gh-pages
-```
+For additional options, consult the [chart documentation](./charts/klances/README.md).
 
 ## License
 

@@ -9,7 +9,7 @@ DOCKER_IMG  := klances
 
 .DEFAULT_GOAL := help
 
-.PHONY: help venv install run build test test-one lint format clean docker docker-run
+.PHONY: help venv install update run build test test-one lint format audit clean docker docker-run
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
@@ -22,11 +22,21 @@ install: venv ## Install all dependencies (backend + frontend)
 	$(BIN)/pip install -e ".[dev]"
 	cd $(FRONTEND) && npm install
 
+update: ## Update all dependencies (backend + frontend)
+	$(BIN)/pip install --upgrade -e ".[dev]"
+	cd $(FRONTEND) && npm update
+
+audit: ## Check dependencies for known security vulnerabilities
+	$(BIN)/pip-audit
+	cd $(FRONTEND) && npm audit
+
 run: ## Start the development server (API + frontend watcher) on port 8000
 	$(BIN)/klances-dev
 
-build: ## Build the frontend for production (src/frontend/dist/)
+build: ## Build the frontend for production and generate OpenAPI spec
 	cd $(FRONTEND) && npm run build
+	mkdir -p docs
+	$(BIN)/python -c "import json; from api.main import app; json.dump(app.openapi(), open('docs/openapi.json', 'w'), indent=2)"
 
 test: ## Run all tests
 	$(PYTEST) tests/ -v
