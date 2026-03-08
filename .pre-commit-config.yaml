@@ -1,0 +1,13 @@
+repos:
+  - repo: local
+    hooks:
+      - id: format
+        name: Format code (ruff)
+        entry: venv/bin/ruff format src/ tests/
+        language: system
+        pass_filenames: false
+      - id: lint
+        name: Lint code (ruff)
+        entry: venv/bin/ruff check src/ tests/
+        language: system
+        pass_filenames: false
