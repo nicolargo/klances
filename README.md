@@ -1,6 +1,7 @@
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/klances)](https://artifacthub.io/packages/helm/klances/klances)
-
-[![Sponsor this project](https://img.shields.io/badge/sponsor-❤️-ff69b4)](https://github.com/sponsors/nicolargo)
+<p align="center">
+  <a href="https://artifacthub.io/packages/helm/klances/klances"><img src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/klances" alt="Artifact Hub"></a>
+  <a href="https://github.com/sponsors/nicolargo"><img src="https://img.shields.io/badge/sponsor-❤️-ff69b4" alt="Sponsor this project"></a>
+</p>
 
 ## What is Klances?
 
@@ -18,36 +19,67 @@ What's displayed by Klances:
   <img src="./docs/screenshot.png" alt="Klances Dashboard" width="900">
 </p>
 
-## Development setup
+## Installation
 
-Requirements:
-
-- Python ≥ 3.10
-- Node.js ≥ 18
-- A Kubernetes cluster reachable via `~/.kube/config` (local dev) or in-cluster service account (production)
+### With Helm (recommended)
 
 ```bash
-# 1. Install all dependencies (backend + frontend) — first time only
-make install
-
-# 2. Start the development server
-make run
+helm repo add klances https://nicolargo.github.io/klances
+helm repo update
+helm install klances klances/klances
 ```
 
-This single command:
-- Builds the Vue.js frontend once
-- Watches `src/frontend/src/` for changes and rebuilds automatically
-- Starts the FastAPI server with auto-reload on port 8000
-
-Open **http://localhost:8000/frontend/** in your browser.
-
-API interactive docs are available at **http://localhost:8000/api/1/docs**.
-
-## Production
+To install in a specific namespace:
 
 ```bash
-make build   # compile the frontend into src/frontend/dist/
-klances      # start the production server
+helm install klances klances/klances --namespace monitoring --create-namespace
+```
+
+#### Exposing Klances outside the cluster
+
+Create a `my-values.yaml` file to enable Ingress:
+
+```yaml
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: klances.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: klances-tls
+      hosts:
+        - klances.example.com
+```
+
+Then install (or upgrade) with:
+
+```bash
+helm install klances klances/klances -f my-values.yaml
+```
+
+For additional options, consult the [chart documentation](./charts/klances/README.md).
+
+### With Docker
+
+```bash
+docker run --rm -p 8000:8000 \
+  -v ~/.kube/config:/root/.kube/config:ro \
+  ghcr.io/nicolargo/klances
+```
+
+Then open **http://localhost:8000/frontend/** in your browser.
+
+### Locally
+
+Requirements: Python >= 3.10, Node.js >= 18, a Kubernetes cluster reachable via `~/.kube/config`.
+
+```bash
+make install   # install all dependencies (first time only)
+make build     # compile the frontend
+klances        # start the server
 ```
 
 The `klances` command accepts options:
@@ -59,24 +91,52 @@ klances --workers 4          # multi-process
 klances --host 127.0.0.1     # bind to localhost only
 ```
 
-In a Kubernetes cluster, Klances automatically uses the in-cluster service account.
-If no cluster configuration is available, Klances starts gracefully and displays a
-"cluster unreachable" message in the WebUI until a connection is established.
+If no cluster configuration is available, Klances starts gracefully and displays a "cluster unreachable" message in the WebUI until a connection is established.
 
-## Available commands
+## Development corner
 
+### Setting up the dev environment
+
+Requirements: Python >= 3.10, Node.js >= 18.
+
+```bash
+# 1. Install all dependencies (backend + frontend)
+make install
+
+# 2. Start the development server
+make run
 ```
+
+This single command:
+
+- Builds the Vue.js frontend once
+- Watches `src/frontend/src/` for changes and rebuilds automatically
+- Starts the FastAPI server with auto-reload on port 8000
+
+Open **http://localhost:8000/frontend/** in your browser.
+
+### Makefile commands
+
+```bash
 make install    Install all dependencies (backend + frontend)
+make update     Update all dependencies (backend + frontend)
+make audit      Check dependencies for known security vulnerabilities
 make run        Start the development server on port 8000
-make build      Build the frontend for production
+make build      Build the frontend for production + generate OpenAPI spec
 make test       Run all backend tests (pytest)
 make test-one   Run a single test file (TEST=tests/test_cluster.py)
 make lint       Lint with ruff
 make format     Format with ruff
+make docker     Build the Docker image
+make docker-run Run Klances in Docker (needs ~/.kube/config)
 make clean      Remove virtualenv, caches and frontend build
 ```
 
-## URL structure
+### API documentation
+
+Interactive API docs are available at **http://localhost:8000/api/1/docs** when the server is running.
+
+The OpenAPI specification is also available as a static file in [`docs/openapi.json`](./docs/openapi.json) (regenerated by `make build`).
 
 | Path | Description |
 |------|-------------|
@@ -89,16 +149,6 @@ make clean      Remove virtualenv, caches and frontend build
 | `/api/1/namespaces/{ns}/pods` | Pod list for a namespace |
 | `/api/1/namespaces/{ns}/pods/{pod}` | Pod details (services, ingresses, events, logs) |
 
-## Installation via Helm
-
-```bash
-helm repo add klances https://nicolargo.github.io/klances
-helm repo update
-helm install klances klances/klances
-```
-
-For additional options, consult the [chart documentation](./charts/klances/README.md).
-
 ## License
 
-Klances is licensed under the MIT License. See the LICENSE file for more details.
+Klances is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.

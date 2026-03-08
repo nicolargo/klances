@@ -1,16 +1,8 @@
-from importlib.metadata import PackageNotFoundError, version
-
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from ..k8s_client import K8sClient, get_k8s_client
-
-API_VERSION = "1"
-
-try:
-    KLANCES_VERSION = version("klances")
-except PackageNotFoundError:
-    KLANCES_VERSION = "unknown"
+from ..version import API_VERSION, KLANCES_VERSION
 
 
 class StatusResponse(BaseModel):

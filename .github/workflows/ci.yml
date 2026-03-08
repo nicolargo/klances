@@ -117,6 +117,11 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+      - name: Sync appVersion from pyproject.toml
+        run: |
+          VERSION=$(grep '^version' pyproject.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          sed -i "s/^appVersion:.*/appVersion: \"$VERSION\"/" charts/klances/Chart.yaml
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
