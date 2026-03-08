@@ -9,7 +9,7 @@ DOCKER_IMG  := klances
 
 .DEFAULT_GOAL := help
 
-.PHONY: help venv install update run build test test-one lint format audit clean docker docker-run
+.PHONY: help venv install pre-commit update run build test test-one lint format audit clean docker docker-run
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
@@ -21,6 +21,10 @@ venv: ## Create Python virtual environment
 install: venv ## Install all dependencies (backend + frontend)
 	$(BIN)/pip install -e ".[dev]"
 	cd $(FRONTEND) && npm install
+
+pre-commit: ## Install pre-commit hooks (format + lint before each commit)
+	$(BIN)/pip install pre-commit
+	$(BIN)/pre-commit install
 
 update: ## Update all dependencies (backend + frontend)
 	$(BIN)/pip install --upgrade -e ".[dev]"
