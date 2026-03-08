@@ -77,6 +77,7 @@ The ClusterRole grants the following access:
 | `""` (core) | pods, pods/log, nodes, namespaces, services, events | get, list, watch |
 | `apps` | deployments | get, list, watch |
 | `networking.k8s.io` | ingresses | get, list, watch |
+| `metrics.k8s.io` | nodes, pods | get, list |
 
 No write, create, update, patch, or delete permissions are granted. This is the minimum set of permissions required for Klances to function.
 
