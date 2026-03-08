@@ -4,6 +4,29 @@ entries:
   - annotations:
       artifacthub.io/license: MIT
     apiVersion: v2
+    appVersion: 0.1.3
+    created: "2026-03-08T08:46:51.770515125Z"
+    description: A read-only Kubernetes dashboard — the Glances of Kubernetes
+    digest: 4edbbd2d1bec0de992d87ad1f5e057bc5f493004387905ec2ba8a2cb4890dc94
+    home: https://github.com/nicolargo/klances
+    keywords:
+    - kubernetes
+    - dashboard
+    - monitoring
+    - read-only
+    maintainers:
+    - email: nicolas@nicolargo.com
+      name: Nicolas Hennion
+    name: klances
+    sources:
+    - https://github.com/nicolargo/klances
+    type: application
+    urls:
+    - https://github.com/nicolargo/klances/releases/download/klances-0.1.3/klances-0.1.3.tgz
+    version: 0.1.3
+  - annotations:
+      artifacthub.io/license: MIT
+    apiVersion: v2
     appVersion: 0.1.2
     created: "2026-03-07T20:40:50.49894264Z"
     description: A read-only Kubernetes dashboard — the Glances of Kubernetes
@@ -47,4 +70,4 @@ entries:
     urls:
     - https://github.com/nicolargo/klances/releases/download/klances-0.1.1/klances-0.1.1.tgz
     version: 0.1.1
-generated: "2026-03-07T20:40:50.498955995Z"
+generated: "2026-03-08T08:46:51.770527608Z"
