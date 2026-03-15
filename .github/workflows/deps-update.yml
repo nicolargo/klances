@@ -1,0 +1,108 @@
+name: Dependency Update
+
+on:
+  schedule:
+    # Every Saturday at 06:00 UTC
+    - cron: "0 6 * * 6"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        working-directory: src/frontend
+        run: npm ci
+
+      - name: Audit and fix vulnerabilities
+        working-directory: src/frontend
+        run: npm audit fix || true
+
+      - name: Update dependencies
+        working-directory: src/frontend
+        run: npm update
+
+      - name: Check for changes
+        id: npm-changes
+        run: |
+          if git diff --quiet src/frontend/package-lock.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create Pull Request
+        if: steps.npm-changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: deps/npm-update
+          delete-branch: true
+          title: "Update NPM dependencies"
+          body: |
+            Automated weekly NPM dependency update.
+
+            - `npm audit fix` applied
+            - `npm update` applied
+
+            Please review the changes and run manual testing before merging.
+          commit-message: "Update NPM dependencies"
+          labels: dependencies
+
+  update-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Audit Python dependencies
+        run: pip-audit || true
+
+      - name: Update dependencies
+        run: pip install --upgrade -e ".[dev]"
+
+      - name: Freeze updated versions
+        run: pip freeze --exclude-editable > requirements-lock.txt
+
+      - name: Check for changes
+        id: pip-changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create Pull Request
+        if: steps.pip-changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: deps/python-update
+          delete-branch: true
+          title: "Update Python dependencies"
+          body: |
+            Automated weekly Python dependency update.
+
+            - `pip-audit` report checked
+            - `pip install --upgrade` applied
+
+            Please review the changes and run manual testing before merging.
+          commit-message: "Update Python dependencies"
+          labels: dependencies
