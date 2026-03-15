@@ -17,6 +17,7 @@ What's displayed by Klances:
 
 <p align="center">
   <img src="./docs/screenshot.png" alt="Klances Dashboard" width="900">
+  <img src="./docs/screenshot-pod.png" alt="Klances Dashboard" width="900">
 </p>
 
 ## Installation
